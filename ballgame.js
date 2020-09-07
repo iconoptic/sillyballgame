@@ -1,4 +1,4 @@
-//WIP
+//Further testing required to achieve maximum fall-balliness
 
 let opening : number [] = [1, 3]
 let ball: number [] = [5, 5]
@@ -15,6 +15,14 @@ function fallingBall () {
     } else {
         ball[1]++
         led.plot(ball[0], ball[1])
+    }
+}
+
+function collision () {
+    if (ball[1] == 4 && (ball[0] == opening[0] || ball[0] == opening[1])) {
+        game.gameOver()
+    } else if (ball[1] == 4 && ball[0] == opening[0]+1) {
+        game.addScore(1)
     }
 }
 
@@ -36,6 +44,7 @@ basic.forever(function () {
 	led.plot(opening[0], 4)
     led.plot(opening[1], 4)
     fallingBall()
+    collision()
     basic.pause(100)
     basic.clearScreen()
 })
