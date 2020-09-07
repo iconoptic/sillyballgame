@@ -1,7 +1,14 @@
 //Further testing required to achieve maximum fall-balliness
 
-let opening : number [] = [1, 3]
-let ball: number [] = [5, 5]
+let opening : number []
+let ball: number []
+let ded: number
+
+function reset () {
+    opening = [1, 3]
+    ball = [5, 5]
+    ded = 0
+}
 
 function newBall () {
     ball[0] = randint(0,4)
@@ -18,9 +25,24 @@ function fallingBall () {
     }
 }
 
+function animate () {
+    let coord : number[] = [(ball[0] == opening[0] ? opening[0] : opening[1]), 3]
+    let angle : number = (coord[0] > 1 ? -1 : 1)
+    while (coord[1] > -1) {
+        led.plot(coord[0], coord[1])
+        basic.pause(20)
+        led.unplot(coord[0], coord[1])
+        basic.pause(20)
+        coord[0] += angle
+        coord[1]--
+    }
+}
+
 function collision () {
     if (ball[1] == 4 && (ball[0] == opening[0] || ball[0] == opening[1])) {
-        game.gameOver()
+        ded++
+        animate()
+        if (ded == 3) game.gameOver()
     } else if (ball[1] == 4 && ball[0] == opening[0]+1) {
         game.addScore(1)
     }
@@ -40,11 +62,17 @@ input.onButtonPressed(Button.B, function () {
     }
 })
 
+input.onButtonPressed(Button.AB, function () {
+    if (game.isGameOver()) reset()
+})
+
+reset()
+
 basic.forever(function () {
 	led.plot(opening[0], 4)
     led.plot(opening[1], 4)
     fallingBall()
     collision()
-    basic.pause(100)
+    basic.pause(200)
     basic.clearScreen()
 })
